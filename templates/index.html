@@ -111,7 +111,7 @@
   <body>
     <div class="container">
       <header>
-        <h1>🌍 Travel Advisory & Destination Guide Generator</h1>
+        <h1>Travel Advisory & Destination Guide Generator</h1>
         <p>
           Instantly craft helpful, AI-powered travel advisories for your next
           journey.
@@ -169,7 +169,7 @@
             </select>
           </div>
 
-          <button type="submit" id="generateBtn">✈️ Generate Advisory</button>
+          <button type="submit" id="generateBtn">Generate Advisory</button>
         </form>
       </div>
 
@@ -178,13 +178,13 @@
         id="resultsContainer"
         style="display: none"
       >
-        <h2>📋 Your Travel Advisory</h2>
+        <h2>Your Travel Advisory</h2>
         <div id="loading" style="display: none">
           <div class="spinner"></div>
           <p>Crafting your travel insights...</p>
         </div>
         <div id="results"></div>
-        <button id="copyBtn">📋 Copy to Clipboard</button>
+        <button id="copyBtn">Copy to Clipboard</button>
       </div>
     </div>
 
@@ -244,9 +244,9 @@
           .writeText(results)
           .then(() => {
             const copyBtn = document.getElementById("copyBtn");
-            copyBtn.textContent = "✅ Copied!";
+            copyBtn.textContent = " Copied!";
             setTimeout(
-              () => (copyBtn.textContent = "📋 Copy to Clipboard"),
+              () => (copyBtn.textContent = " Copy to Clipboard"),
               2000
             );
           })

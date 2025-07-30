@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Travel Advisory Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>Travel Advisory & Destination Guide Generator</h1>
+        <p>
+          Instantly generate helpful travel advisories and destination guides
+          for your passengers.
+        </p>
+      </header>
+
+      <div class="form-container">
+        <form id="ideaForm">
+          <div class="form-group">
+            <label for="niche">Destination or Location:</label>
+            <input
+              type="text"
+              id="niche"
+              name="niche"
+              required
+              placeholder="e.g., Paris, Tokyo, Ladakh, Bali"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="num_ideas">Number of Advisories:</label>
+            <select id="num_ideas" name="num_ideas">
+              <option value="1">1</option>
+              <option value="3" selected>3</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="tone">Tone of Advisory:</label>
+            <select id="tone" name="tone">
+              <option value="professional" selected>Professional</option>
+              <option value="casual">Casual</option>
+              <option value="humorous">Humorous</option>
+              <option value="inspirational">Inspirational</option>
+              <option value="educational">Educational</option>
+            </select>
+          </div>
+
+          <div class="form-group checkbox">
+            <input
+              type="checkbox"
+              id="include_outline"
+              name="include_outline"
+              checked
+            />
+            <label for="include_outline">Include Detailed Outline</label>
+          </div>
+
+          <div class="form-group">
+            <label for="model">LLM Model:</label>
+            <select id="model" name="model">
+              <!-- Will be populated from API -->
+              <option value="mistral" selected>mistral</option>
+            </select>
+          </div>
+
+          <button type="submit" id="generateBtn">Generate Advisory</button>
+        </form>
+      </div>
+
+      <div
+        class="results-container"
+        id="resultsContainer"
+        style="display: none"
+      >
+        <h2>Generated Travel Advisory</h2>
+        <div id="loading" style="display: none">
+          <div class="spinner"></div>
+          <p>Crafting your travel insights...</p>
+        </div>
+        <div id="results">
+          <!-- Results will appear here -->
+        </div>
+        <button id="copyBtn">Copy to Clipboard</button>
+      </div>
+    </div>
+
+    <script>
+      // Fetch available models when page loads
+      document.addEventListener("DOMContentLoaded", async () => {
+        try {
+          const response = await fetch("/models");
+          const data = await response.json();
+          const modelSelect = document.getElementById("model");
+          modelSelect.innerHTML = "";
+          data.models.forEach((model) => {
+            const option = document.createElement("option");
+            option.value = model;
+            option.textContent = model;
+            modelSelect.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error fetching models:", error);
+        }
+      });
+
+      // Handle form submission
+      document
+        .getElementById("ideaForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const formData = new FormData(e.target);
+          const resultsContainer = document.getElementById("resultsContainer");
+          const loading = document.getElementById("loading");
+          const results = document.getElementById("results");
+
+          resultsContainer.style.display = "block";
+          loading.style.display = "block";
+          results.innerHTML = "";
+
+          try {
+            const response = await fetch("/generate", {
+              method: "POST",
+              body: formData,
+            });
+
+            if (!response.ok) {
+              throw new Error(`Error: ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            results.innerHTML = formatResponseWithMarkdown(
+              data.generated_ideas
+            );
+          } catch (error) {
+            results.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+          } finally {
+            loading.style.display = "none";
+          }
+        });
+
+      // Copy to clipboard
+      document.getElementById("copyBtn").addEventListener("click", () => {
+        const results = document.getElementById("results").innerText;
+        navigator.clipboard
+          .writeText(results)
+          .then(() => {
+            const copyBtn = document.getElementById("copyBtn");
+            copyBtn.textContent = "Copied!";
+            setTimeout(() => (copyBtn.textContent = "Copy to Clipboard"), 2000);
+          })
+          .catch((err) => console.error("Failed to copy: ", err));
+      });
+
+      // Markdown formatter
+      function formatResponseWithMarkdown(text) {
+        let formatted = text.replace(/\n/g, "<br>");
+        formatted = formatted.replace(
+          /#{1,6}\s+(.*?)(?:<br>|$)/g,
+          "<h3>$1</h3>"
+        );
+        formatted = formatted.replace(
+          /(\d+\.\s+)(.*?)(?:<br>|$)/g,
+          '<div class="list-item"><span class="list-number">$1</span>$2</div>'
+        );
+        formatted = formatted.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        formatted = formatted.replace(/\*(.*?)\*/g, "<em>$1</em>");
+        return formatted;
+      }
+    </script>
+  </body>
+</html>

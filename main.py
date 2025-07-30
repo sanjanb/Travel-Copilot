@@ -1,12 +1,3 @@
-# File structure:
-# /blog_idea_generator/
-#   main.py
-#   prompt_templates.py
-#   static/
-#     styles.css
-#   templates/
-#     index.html
-
 # main.py
 import os
 from typing import List, Optional

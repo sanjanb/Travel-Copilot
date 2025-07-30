@@ -67,10 +67,8 @@ uvicorn main:app --reload
 
 ---
 
-## 🖼 Screenshot
+## Screenshot
 
-> _(Include a screenshot of the interface here for a better first impression)_
-> Example:
 > ![screenshot](./assets/interface-preview.png)
 
 ---
@@ -78,7 +76,7 @@ uvicorn main:app --reload
 ## Project Structure
 
 ```bash
-📁 travel-advisory-ui
+ travel-advisory-ui
 │
 ├── index.html         # Frontend HTML
 ├── styles.css         # Tailwind CSS (if used separately)

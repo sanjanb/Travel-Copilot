@@ -19,7 +19,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # Configuration for open-webui API
 WEBUI_ENABLED = True  # Set to use open-webui API
 WEBUI_BASE_URL = "https://chat.ivislabs.in"
-API_KEY = "sk-bf725748416143d88b7ea444d68f0c90"  # Replace with your actual API key if needed
+API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9"  # Replace with your actual API key if needed
 # Default model based on available models
 DEFAULT_MODEL = "llama3.2-vision:latest"  # Update to one of the available models
 
